@@ -20,7 +20,7 @@ Kivy-Garden==0.1.5
 kivy_deps.angle==0.4.0
 kivy_deps.glew==0.3.1
 kivy_deps.sdl2==0.8.0
-kivymd @ https://github.com/kivymd/KivyMD/archive/master.zip#sha256=95cb4f6c5c03c594cbc263379474131cce578469df9ac5b21d06f38b7e3700bb
+kivymd @ https://github.com/kivymd/KivyMD/archive/master.zip
 MarkupSafe==3.0.2
 materialyoucolor==2.0.10
 packaging==25.0
