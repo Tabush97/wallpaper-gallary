@@ -1,9 +1,11 @@
 from flask import Flask, render_template, abort
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates', static_folder='static')
 
-IMAGE_FOLDER = os.path.join('static', 'images', 'pc')
+# Correct path using absolute path relative to this file
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+IMAGE_FOLDER = os.path.join(BASE_DIR, 'static', 'images', 'pc')
 
 @app.route('/')
 def index():
@@ -13,10 +15,10 @@ def index():
 
 @app.route('/wallpaper/<filename>')
 def wallpaper(filename):
-    # Security check: make sure file exists in folder and filename is safe
     if filename not in os.listdir(IMAGE_FOLDER):
         abort(404)
     return render_template('wallpaper.html', filename=filename)
 
+# Only for local testing
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
