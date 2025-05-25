@@ -1,24 +1,250 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <title>HD Wallpapers Gallery</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallpaper Galaxy | Free HD Wallpapers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #e0e0e0;
+            --accent: #6c5ce7;
+            --hover: #a29bfe;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s;
+        }
+        
+        header {
+            padding: 1.5rem;
+            background: var(--card-bg);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        h1 {
+            margin: 0;
+            color: var(--accent);
+        }
+        
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        input, select, button {
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text);
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        button {
+            background: var(--accent);
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: 500;
+        }
+        
+        button:hover {
+            background: var(--hover);
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin: 1rem 0;
+        }
+        
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--card-bg);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab-btn.active {
+            background: var(--accent);
+        }
+        
+        /* Wallpaper Grid */
+        .wallpaper-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .wallpaper-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .wallpaper-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .wallpaper-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid #333;
+        }
+        
+        .wallpaper-info {
+            padding: 1rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: var(--accent);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            color: var(--accent);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .download-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            background: var(--card-bg);
+        }
+        
+        @media (max-width: 768px) {
+            .wallpaper-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>🔥 HD Wallpapers</h1>
-        <p>Click any wallpaper to preview and download in full HD</p>
+        <div class="container">
+            <h1><i class="fas fa-image"></i> Wallpaper Galaxy</h1>
+            <p>Download Free HD Wallpapers for Desktop & Mobile</p>
+        </div>
     </header>
-
-    <div class="gallery">
-        {% for wallpaper in wallpapers %}
-            <div class="wallpaper">
-                <a href="{{ url_for('wallpaper', filename=wallpaper) }}">
-                    <img src="{{ url_for('static', filename='images/pc/' ~ wallpaper) }}" alt="Wallpaper">
-                </a>
-            </div>
-        {% endfor %}
+    
+    <div class="container">
+        <!-- Search & Filters -->
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search wallpapers...">
+            <select id="category-select">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+            <select id="device-select">
+                <option value="">All Devices</option>
+                <option value="Desktop">Desktop</option>
+                <option value="Mobile">Mobile</option>
+            </select>
+            <button onclick="filterWallpapers()"><i class="fas fa-search"></i> Search</button>
+        </div>
+        
+        <!-- Wallpaper Grid -->
+        <div class="wallpaper-grid" id="wallpaper-grid">
+            {% for device, items in wallpapers.items() %}
+                {% for wallpaper in items %}
+                    <div class="wallpaper-card" data-device="{{ device }}" data-category="{{ wallpaper.category }}" data-filename="{{ wallpaper.filename }}">
+                        <img src="{{ wallpaper.url }}" class="wallpaper-img" alt="{{ wallpaper.category }} wallpaper">
+                        <div class="wallpaper-info">
+                            <span class="badge">{{ wallpaper.category }}</span>
+                            <span class="badge">{{ device }}</span>
+                            <a href="/download/{{ device }}/{{ wallpaper.filename }}" class="download-btn">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+        
+        {% if wallpapers.Desktop|length == 0 and wallpapers.Mobile|length == 0 %}
+            <p style="text-align: center; margin: 3rem 0;">No wallpapers found. Try a different search!</p>
+        {% endif %}
     </div>
+    
+    <footer>
+        <p>© 2023 Wallpaper Galaxy. All wallpapers are free to download.</p>
+    </footer>
+    
+    <script>
+        // Filter wallpapers based on search inputs
+        function filterWallpapers() {
+            const searchQuery = document.getElementById("search-input").value.toLowerCase();
+            const category = document.getElementById("category-select").value;
+            const device = document.getElementById("device-select").value;
+            
+            document.querySelectorAll(".wallpaper-card").forEach(card => {
+                const matchesDevice = !device || card.dataset.device === device;
+                const matchesCategory = !category || card.dataset.category === category;
+                const matchesSearch = card.dataset.filename.toLowerCase().includes(searchQuery) || 
+                                     card.dataset.category.toLowerCase().includes(searchQuery);
+                
+                card.style.display = (matchesDevice && matchesCategory && matchesSearch) ? "block" : "none";
+            });
+        }
+        
+        // Initialize with Desktop wallpapers shown by default
+        document.addEventListener("DOMContentLoaded", () => {
+            filterWallpapers();
+        });
+    </script>
+<!-- Development Auto-Reload (remove before deploying!) -->
+{% if config.DEBUG %}
+  <script>
+    // Auto-refresh when CSS/JS files change
+    new EventSource("http://localhost:5000/sse").onmessage = () => location.reload();
+  </script>
+{% endif %}
 </body>
 </html>
