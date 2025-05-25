@@ -4,10 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Wallpaper Gallery</title>
-  <!-- Google Fonts Poppins -->
+
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
   <style>
-    /* Reset */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -23,7 +24,6 @@
       min-height: 100vh;
     }
 
-    /* Paper-like container */
     .paper-container {
       background: #fffdfa;
       width: 100%;
@@ -38,7 +38,6 @@
       line-height: 1.6;
     }
 
-    /* Paper lines (horizontal lines) */
     .paper-container::before {
       content: "";
       position: absolute;
@@ -68,7 +67,6 @@
       z-index: 1;
     }
 
-    /* Logo box with animation */
     .logo-box {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
@@ -94,7 +92,6 @@
       color: #444;
       user-select: none;
       letter-spacing: 1.5px;
-      font-family: 'Poppins', sans-serif;
     }
 
     main {
@@ -106,18 +103,16 @@
       margin-bottom: 1rem;
       font-weight: 600;
       color: #555;
-      font-family: 'Poppins', sans-serif;
     }
 
-    /* Categories list */
     .category-list {
-      list-style: none;
       display: flex;
       gap: 1.5rem;
       flex-wrap: wrap;
+      margin-bottom: 1rem;
     }
 
-    .category-item {
+    .category-button {
       background: transparent;
       border: 2px solid #764ba2;
       color: #764ba2;
@@ -128,14 +123,11 @@
       font-size: 1rem;
       transition: all 0.3s ease;
       user-select: none;
-      font-family: 'Poppins', sans-serif;
-      box-shadow: 0 0 5px transparent;
       position: relative;
       overflow: hidden;
     }
 
-    /* Animate underline sliding in */
-    .category-item::after {
+    .category-button::after {
       content: '';
       position: absolute;
       height: 2px;
@@ -147,17 +139,16 @@
       border-radius: 1px;
     }
 
-    .category-item:hover {
+    .category-button:hover {
       color: #fff;
       background: #764ba2;
       box-shadow: 0 0 10px #764ba2;
     }
 
-    .category-item:hover::after {
+    .category-button:hover::after {
       left: 0;
     }
 
-    /* Thumbnails smaller and inline */
     .thumbnail-grid {
       margin-top: 2rem;
       display: flex;
@@ -180,12 +171,18 @@
       border-color: #764ba2;
     }
 
+    #gallery {
+      margin-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
     footer {
       text-align: center;
       margin-top: 3rem;
       color: #999;
       font-size: 0.9rem;
-      font-family: 'Poppins', sans-serif;
       position: relative;
       z-index: 1;
     }
@@ -201,19 +198,22 @@
 
     <main>
       <h2>Browse Categories</h2>
-      <ul class="category-list">
-        <li class="category-item" onclick="alert('Navigate to Nature')">Nature</li>
-        <li class="category-item" onclick="alert('Navigate to Anime')">Anime</li>
-        <li class="category-item" onclick="alert('Navigate to Abstract')">Abstract</li>
-        <li class="category-item" onclick="alert('Navigate to Tech')">Tech</li>
-      </ul>
+
+      <div class="category-list">
+        <button class="category-button" data-category="Nature">Nature</button>
+        <button class="category-button" data-category="Anime">Anime</button>
+        <button class="category-button" data-category="Abstract">Abstract</button>
+        <button class="category-button" data-category="Tech">Tech</button>
+      </div>
 
       <div class="thumbnail-grid" aria-label="Wallpaper thumbnails">
-        <img src="https://source.unsplash.com/80x50/?nature" alt="Nature thumbnail" class="thumbnail" />
-        <img src="https://source.unsplash.com/80x50/?anime" alt="Anime thumbnail" class="thumbnail" />
-        <img src="https://source.unsplash.com/80x50/?abstract" alt="Abstract thumbnail" class="thumbnail" />
-        <img src="https://source.unsplash.com/80x50/?technology" alt="Tech thumbnail" class="thumbnail" />
+        <img src="/static/images/pc/Nature/thumb.jpg" alt="Nature thumbnail" class="thumbnail" />
+        <img src="/static/images/pc/Anime/thumb.jpg" alt="Anime thumbnail" class="thumbnail" />
+        <img src="/static/images/pc/Abstract/thumb.jpg" alt="Abstract thumbnail" class="thumbnail" />
+        <img src="/static/images/pc/Tech/thumb.jpg" alt="Tech thumbnail" class="thumbnail" />
       </div>
+
+      <div id="gallery"></div>
     </main>
 
     <footer>
@@ -221,5 +221,6 @@
     </footer>
   </div>
 
+  <script src="/static/js/main.js"></script>
 </body>
 </html>

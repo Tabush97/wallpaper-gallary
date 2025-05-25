@@ -1,22 +1,34 @@
-// Smooth scrolling for internal links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function(e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
+const gallery = document.getElementById('gallery');
+const categoryButtons = document.querySelectorAll('.category-button');
+
+// How many images to try to load per category
+const MAX_IMAGES = 20;
+
+categoryButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const category = button.getAttribute('data-category');
+    loadCategoryImages(category);
   });
 });
 
-// Fade-in effect for images on page load
-window.addEventListener('load', () => {
-  const images = document.querySelectorAll('img');
-  images.forEach(img => {
-    img.style.opacity = 0;
-    img.style.transition = 'opacity 1s ease-in-out';
-    setTimeout(() => {
-      img.style.opacity = 1;
-    }, 100);
-  });
-});
+function loadCategoryImages(category) {
+  gallery.innerHTML = ''; // Clear previous content
+
+  for (let i = 1; i <= MAX_IMAGES; i++) {
+    const img = document.createElement('img');
+    img.src = `/static/images/pc/${category}/${i}.jpg`;
+    img.alt = `${category} wallpaper ${i}`;
+    img.classList.add('thumbnail');
+
+    // Only add the image to gallery if it loads successfully
+    img.onload = () => {
+      gallery.appendChild(img);
+    };
+
+    // If image fails to load (not found), stop trying further
+    img.onerror = () => {
+      // Stop loading more images when one is missing
+      // Optionally remove this image element if needed
+    };
+  }
+}
