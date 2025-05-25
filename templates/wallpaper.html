@@ -6,47 +6,53 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
         body {
-            background: #111;
-            color: #f1f1f1;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f9f9f7; /* light paper color */
+            color: #333;
+            font-family: 'Poppins', sans-serif;
             padding: 40px;
             text-align: center;
+            border: 1px solid #ccc; /* subtle border to look like paper edges */
+            max-width: 900px;
+            margin: 40px auto;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
         img {
             max-width: 90vw;
             max-height: 70vh;
             border-radius: 10px;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
             margin-bottom: 30px;
         }
         a.download-btn {
             display: inline-block;
-            padding: 12px 25px;
-            background: #ff6b6b;
+            padding: 12px 30px;
+            background: #007BFF; /* clean blue */
             color: white;
             text-decoration: none;
             border-radius: 8px;
-            font-weight: bold;
+            font-weight: 600;
             transition: background 0.3s ease;
         }
         a.download-btn:hover {
-            background: #ff3b3b;
+            background: #0056b3;
         }
         a.back-link {
             display: block;
             margin-top: 20px;
-            color: #aaa;
+            color: #555;
             text-decoration: none;
+            font-weight: 500;
         }
         a.back-link:hover {
-            color: #fff;
+            color: #000;
         }
     </style>
 </head>
 <body>
     <h1>Wallpaper Preview</h1>
     <img src="{{ url_for('static', filename='images/pc/' ~ filename) }}" alt="Wallpaper" />
-    <br>
+    <br />
     <a class="download-btn" href="{{ url_for('static', filename='images/pc/' ~ filename) }}" download>Download</a>
     <a class="back-link" href="{{ url_for('index') }}">&larr; Back to Gallery</a>
 </body>

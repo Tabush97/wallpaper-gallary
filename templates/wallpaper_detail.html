@@ -3,8 +3,11 @@
 {% block title %}Download Wallpaper{% endblock %}
 
 {% block content %}
-<h2>Preview</h2>
-<img src="{{ url_for('static', filename='images/pc/' + filename) }}" width="100%" alt="Wallpaper">
-
-<p><a href="{{ url_for('download', filename=filename) }}">Download This Wallpaper</a></p>
+  <section class="wallpaper-detail">
+    <h2>Preview</h2>
+    <img src="{{ url_for('static', filename='images/pc/' + filename) }}" alt="Wallpaper Preview" class="wallpaper-img" />
+    <p>
+      <a href="{{ url_for('download', filename=filename) }}" class="download-link">Download This Wallpaper</a>
+    </p>
+  </section>
 {% endblock %}
