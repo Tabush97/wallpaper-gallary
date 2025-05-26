@@ -1,34 +1,67 @@
-const gallery = document.getElementById('gallery');
-const categoryButtons = document.querySelectorAll('.category-button');
+let currentPage = 1;
+let hasMore = true;
+let currentFilters = { category: 'all', search: '' };
 
-// How many images to try to load per category
-const MAX_IMAGES = 20;
+async function loadWallpapers() {
+    let url = `/api/wallpapers?page=${currentPage}&limit=20`;
+    if (currentFilters.category && currentFilters.category !== 'all') {
+        url += `&category=${currentFilters.category}`;
+    }
+    if (currentFilters.search) {
+        url += `&search=${currentFilters.search}`;
+    }
+    const response = await fetch(url);
+    const data = await response.json();
+    data.wallpapers.forEach(wallpaper => {
+        const galleryItem = document.createElement('div');
+        galleryItem.classList.add('gallery-item');
+        galleryItem.innerHTML = `
+            <img src="${wallpaper.thumbnail}" alt="Wallpaper" loading="lazy">
+            <div class="overlay">
+                <a href="${wallpaper.url}" download class="download-btn">Download</a>
+            </div>
+        `;
+        document.getElementById('gallery').appendChild(galleryItem);
+    });
+    hasMore = data.has_more;
+    document.getElementById('loadMore').style.display = hasMore ? 'block' : 'none';
+}
 
-categoryButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const category = button.getAttribute('data-category');
-    loadCategoryImages(category);
-  });
+// Initial load
+loadWallpapers();
+
+// Load more button
+document.getElementById('loadMore').addEventListener('click', () => {
+    if (hasMore) {
+        currentPage++;
+        loadWallpapers();
+    }
 });
 
-function loadCategoryImages(category) {
-  gallery.innerHTML = ''; // Clear previous content
+// Category buttons
+document.querySelectorAll('.category-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        document.querySelector('.category-btn.active').classList.remove('active');
+        button.classList.add('active');
+        currentFilters.category = button.dataset.category;
+        currentPage = 1;
+        document.getElementById('gallery').innerHTML = '';
+        loadWallpapers();
+    });
+});
 
-  for (let i = 1; i <= MAX_IMAGES; i++) {
-    const img = document.createElement('img');
-    img.src = `/static/images/pc/${category}/${i}.jpg`;
-    img.alt = `${category} wallpaper ${i}`;
-    img.classList.add('thumbnail');
+// Search input
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    currentFilters.search = e.target.value;
+    currentPage = 1;
+    document.getElementById('gallery').innerHTML = '';
+    loadWallpapers();
+});
 
-    // Only add the image to gallery if it loads successfully
-    img.onload = () => {
-      gallery.appendChild(img);
-    };
-
-    // If image fails to load (not found), stop trying further
-    img.onerror = () => {
-      // Stop loading more images when one is missing
-      // Optionally remove this image element if needed
-    };
-  }
-}
+// Theme toggle
+document.getElementById('themeToggle').addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const icon = document.querySelector('#themeToggle i');
+    icon.classList.toggle('fa-moon');
+    icon.classList.toggle('fa-sun');
+});

@@ -1,64 +1,33 @@
-from flask import Flask, render_template, send_from_directory, abort
 import os
+from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
-app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-# --- Configuration ---
-WALLPAPER_DIR = os.path.join('static', 'images')
-DEVICES = {'Desktop': 'pc', 'Mobile': 'mobile'}
-ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp'}
+def get_all_wallpapers():
+    wallpapers = []
+    base_path = 'static/images'
+    for root, dirs, files in os.walk(base_path):
+        for file in files:
+            if file.lower().endswith(('.png', '.jpg', '.jpeg')) and not file.lower().endswith('-thumb.jpg'):
+                path = os.path.join(root, file).replace('\\', '/')  # Fix for Windows paths
+                relative_path = '/' + path
+                category = os.path.basename(root)
+                parent_folder = os.path.basename(os.path.dirname(root))
+                device_type = parent_folder if parent_folder in ['mobile', 'pc'] else 'general'
+                # Look for category-specific thumbnail (e.g., gaming-thumb.jpg)
+                thumb_filename = f"{category.lower()}-thumb.jpg"
+                thumb_path = f"/{base_path}/{parent_folder}/{category}/{thumb_filename}"
+                # Fallback to main image if thumbnail is missing
+                if not os.path.exists(os.path.join(app.root_path, thumb_path[1:])):
+                    thumb_path = relative_path
+                wallpapers.append({
+                    'url': relative_path,
+                    'thumbnail': thumb_path,
+                    'category': category,
+                    'device_type': device_type,
+                    'tags': [category.lower(), device_type.lower()]
+                })
+    return wallpapers
 
-# --- Helper Functions ---
-def is_allowed_file(filename):
-    return os.path.splitext(filename)[1].lower() in ALLOWED_EXTENSIONS
-
-def get_wallpapers():
-    wallpapers = {}
-    categories = set()
-
-    for device, folder in DEVICES.items():
-        path = os.path.join(WALLPAPER_DIR, folder)
-        wallpapers[device] = []
-
-        for root, _, files in os.walk(path):
-            category = os.path.basename(root)
-            if category not in DEVICES.values():
-                categories.add(category)
-                for file in files:
-                    if is_allowed_file(file):
-                        wallpapers[device].append({
-                            'url': os.path.join(root, file).replace('\\', '/'),
-                            'category': category,
-                            'filename': file
-                        })
-
-    return wallpapers, sorted(categories)
-
-# --- Routes ---
 @app.route('/')
-def home():
-    wallpapers, categories = get_wallpapers()
-    return render_template('index.html', wallpapers=wallpapers, categories=categories)
-
-@app.route('/download/<device>/<path:filename>')
-def download(device, filename):
-    if device not in DEVICES:
-        abort(404)
-
-    # Security: prevent directory traversal
-    safe_path = os.path.normpath(filename)
-    if '..' in safe_path or safe_path.startswith('/'):
-        abort(403)
-
-    directory = os.path.join(WALLPAPER_DIR, DEVICES[device])
-    file_path = os.path.join(directory, filename)
-
-    if not os.path.isfile(file_path) or not is_allowed_file(filename):
-        abort(404)
-
-    return send_from_directory(directory, filename, as_attachment=True)
-
-# --- Run the App ---
-if __name__ == '__main__':
-    app.run(debug=True)
+def

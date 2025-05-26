@@ -1,226 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wallpaper Gallery</title>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #e8e6e1;
-      display: flex;
-      justify-content: center;
-      padding: 2rem;
-      min-height: 100vh;
-    }
-
-    .paper-container {
-      background: #fffdfa;
-      width: 100%;
-      max-width: 900px;
-      border: 2px solid #ccc;
-      border-left: 10px solid #ccc;
-      border-right: 10px solid #ccc;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      padding: 2rem 3rem;
-      position: relative;
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    .paper-container::before {
-      content: "";
-      position: absolute;
-      top: 40px;
-      bottom: 40px;
-      left: 15px;
-      right: 15px;
-      background-image:
-        repeating-linear-gradient(
-          to bottom,
-          transparent,
-          transparent 23px,
-          #d3d1c7 24px
-        );
-      pointer-events: none;
-      z-index: 0;
-      border-radius: 4px;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 15px;
-      margin-bottom: 2rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .logo-box {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      padding: 0.6rem 1rem;
-      font-weight: 700;
-      font-size: 1.6rem;
-      border-radius: 6px;
-      box-shadow: 0 3px 8px rgba(102, 126, 234, 0.6);
-      font-family: 'Poppins', sans-serif;
-      user-select: none;
-      animation: pulse 2.5s infinite alternate;
-      cursor: default;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 8px #667eea; }
-      100% { box-shadow: 0 0 20px #764ba2; }
-    }
-
-    .site-name {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: #444;
-      user-select: none;
-      letter-spacing: 1.5px;
-    }
-
-    main {
-      position: relative;
-      z-index: 1;
-    }
-
-    h2 {
-      margin-bottom: 1rem;
-      font-weight: 600;
-      color: #555;
-    }
-
-    .category-list {
-      display: flex;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
-    }
-
-    .category-button {
-      background: transparent;
-      border: 2px solid #764ba2;
-      color: #764ba2;
-      padding: 0.6rem 1.2rem;
-      border-radius: 20px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      user-select: none;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .category-button::after {
-      content: '';
-      position: absolute;
-      height: 2px;
-      width: 100%;
-      background: #764ba2;
-      left: -100%;
-      bottom: 4px;
-      transition: left 0.3s ease;
-      border-radius: 1px;
-    }
-
-    .category-button:hover {
-      color: #fff;
-      background: #764ba2;
-      box-shadow: 0 0 10px #764ba2;
-    }
-
-    .category-button:hover::after {
-      left: 0;
-    }
-
-    .thumbnail-grid {
-      margin-top: 2rem;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .thumbnail {
-      width: 80px;
-      height: 50px;
-      object-fit: cover;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: border-color 0.3s ease;
-    }
-
-    .thumbnail:hover {
-      border-color: #764ba2;
-    }
-
-    #gallery {
-      margin-top: 2rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 3rem;
-      color: #999;
-      font-size: 0.9rem;
-      position: relative;
-      z-index: 1;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallpaper Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
-  <div class="paper-container">
     <header>
-      <div class="logo-box">WPG</div>
-      <div class="site-name">Wallpaper Gallery</div>
+        <div class="header-container">
+            <h1>Wallpaper Gallery</h1>
+            <div class="theme-toggle">
+                <button id="themeToggle" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+        <nav class="category-nav">
+            <button class="category-btn active" data-category="all">All</button>
+            <button class="category-btn" data-category="Abstract">Abstract</button>
+            <button class="category-btn" data-category="Nature">Nature</button>
+            <button class="category-btn" data-category="Gaming">Gaming</button>
+            <button class="category-btn" data-category="General">General</button>
+            <button class="category-btn" data-category="Anime">Anime</button>
+        </nav>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search wallpapers...">
+        </div>
     </header>
-
     <main>
-      <h2>Browse Categories</h2>
-
-      <div class="category-list">
-        <button class="category-button" data-category="Nature">Nature</button>
-        <button class="category-button" data-category="Anime">Anime</button>
-        <button class="category-button" data-category="Abstract">Abstract</button>
-        <button class="category-button" data-category="Tech">Tech</button>
-      </div>
-
-      <div class="thumbnail-grid" aria-label="Wallpaper thumbnails">
-        <img src="/static/images/pc/Nature/thumb.jpg" alt="Nature thumbnail" class="thumbnail" />
-        <img src="/static/images/pc/Anime/thumb.jpg" alt="Anime thumbnail" class="thumbnail" />
-        <img src="/static/images/pc/Abstract/thumb.jpg" alt="Abstract thumbnail" class="thumbnail" />
-        <img src="/static/images/pc/Tech/thumb.jpg" alt="Tech thumbnail" class="thumbnail" />
-      </div>
-
-      <div id="gallery"></div>
+        <div class="gallery" id="gallery">
+            <!-- Wallpapers loaded via JavaScript -->
+        </div>
+        <button id="loadMore" style="display: none;">Load More</button>
     </main>
-
-    <footer>
-      &copy; 2025 Wallpaper Gallery. All rights reserved.
-    </footer>
-  </div>
-
-  <script src="/static/js/main.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
