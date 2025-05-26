@@ -30,4 +30,38 @@ def get_all_wallpapers():
     return wallpapers
 
 @app.route('/')
-def
+def index():
+    return render_template('index.html')
+
+@app.route('/api/wallpapers')
+def api_wallpapers():
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 20, type=int)
+    category = request.args.get('category', None)
+    search = request.args.get('search', None)
+    
+    all_wallpapers = get_all_wallpapers()
+    filtered_wallpapers = all_wallpapers
+    
+    if category and category != 'all':
+        filtered_wallpapers = [w for w in filtered_wallpapers if w['category'].lower() == category.lower()]
+    
+    if search:
+        search_lower = search.lower()
+        filtered_wallpapers = [w for w in filtered_wallpapers if any(search_lower in tag for tag in w['tags'])]
+    
+    total = len(filtered_wallpapers)
+    start = (page - 1) * limit
+    end = start + limit
+    paginated_wallpapers = filtered_wallpapers[start:end]
+    has_more = end < total
+    
+    return jsonify({
+        'wallpapers': paginated_wallpapers,
+        'total': total,
+        'page': page,
+        'has_more': has_more
+    })
+
+if __name__ == '__main__':
+    app.run(debug=True)
